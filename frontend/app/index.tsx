@@ -128,7 +128,7 @@ export default function LimpezaProApp() {
 function LoadingScreen() {
   return (
     <View style={styles.centerContainer}>
-      <Ionicons name="cleaning" size={60} color="#4CAF50" />
+      <Ionicons name="checkmark-circle" size={60} color="#4CAF50" />
       <Text style={styles.loadingText}>LimpezaPro</Text>
     </View>
   );
