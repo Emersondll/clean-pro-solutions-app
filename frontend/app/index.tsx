@@ -262,9 +262,11 @@ function AuthScreen({ onAuthSuccess }: { onAuthSuccess: (user: User) => void }) 
 // Simple TextInput Component
 function TextInput({ style, ...props }: any) {
   return (
-    <View style={[styles.inputContainer, style]}>
-      <Text style={styles.inputText} {...props} />
-    </View>
+    <RNTextInput 
+      style={[styles.inputContainer, style]} 
+      placeholderTextColor="#999"
+      {...props} 
+    />
   );
 }
 
