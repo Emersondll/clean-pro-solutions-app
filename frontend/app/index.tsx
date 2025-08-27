@@ -220,7 +220,7 @@ function AuthScreen({ onAuthSuccess }: { onAuthSuccess: (user: User) => void }) 
                     Profissional
                   </Text>
                 </TouchableOpacity>
-              </div>
+              </View>
             </View>
           </>
         )}
