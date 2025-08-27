@@ -712,8 +712,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 16,
     backgroundColor: '#F9F9F9',
-  },
-  inputText: {
     fontSize: 16,
     color: '#333',
   },
