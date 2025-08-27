@@ -8,7 +8,8 @@ import {
   SafeAreaView,
   Image,
   Alert,
-  Platform
+  Platform,
+  TextInput as RNTextInput
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
