@@ -10,19 +10,32 @@ import {
 import { theme } from '../../src/theme/theme';
 import { Card } from '../../src/components/Card';
 import { Ionicons } from '@expo/vector-icons';
-
-const MOCK_JOBS = [
-  { id: '1', title: 'Limpeza Residencial', status: 'COMPLETED', date: '25 Abr 2024', price: 'R$ 150,00' },
-  { id: '2', title: 'Limpeza Pós-Obra', status: 'IN_PROGRESS', date: '30 Abr 2024', price: 'R$ 450,00' },
-  { id: '3', title: 'Limpeza de Sofá', status: 'PENDING', date: '02 Mai 2024', price: 'R$ 200,00' },
-];
+import api from '../../src/services/api';
 
 export default function Jobs() {
-  const [refreshing, setRefreshing] = useState(false);
+  const [jobs, setJobs] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const fetchJobs = async () => {
+    try {
+      const response = await api.get('/jobs');
+      setJobs(response.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchJobs();
+  }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1500);
+    fetchJobs();
   };
 
   const getStatusColor = (status: string) => {
@@ -43,10 +56,18 @@ export default function Jobs() {
     }
   };
 
+  if (loading && !refreshing) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: theme.colors.textMuted }}>Carregando trabalhos...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={MOCK_JOBS}
+        data={jobs}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         refreshControl={

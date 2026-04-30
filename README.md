@@ -29,6 +29,20 @@ Visão geral de serviços disponíveis, banners promocionais e acesso rápido à
 ![Meus Trabalhos](./frontend/resources/docs/jobs.png)
 Acompanhamento detalhado de todos os agendamentos com status visual (Pendente, Em Andamento, Concluído).
 
+## ⚙️ Modos de Execução
+
+A aplicação suporta dois modos de operação, controlados pelo arquivo `.env`:
+
+### 1. Modo Simulado (Mock) - Ideal para Testes de UI/UX
+Permite navegar por todas as telas e testar a lógica do App sem precisar que o backend esteja rodando.
+- **Configuração**: No arquivo `.env`, defina `EXPO_PUBLIC_USE_MOCKS=true`.
+- **Funcionalidades**: Login simulado, listagem de serviços e trabalhos com dados de exemplo, e sucesso automático em ações (POST/PUT).
+
+### 2. Modo Real (Backend/BFF)
+Conecta o App aos microsserviços através do BFF.
+- **Configuração**: No arquivo `.env`, defina `EXPO_PUBLIC_USE_MOCKS=false`.
+- **Requisito**: Os serviços Docker do backend devem estar ativos (`docker-compose up`).
+
 ---
 
 ### 4. Área do Usuário (Profile)
@@ -37,18 +51,18 @@ Controle total sobre dados pessoais, endereços, segurança e preferências do a
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## 🛠️ Tecnologias e Decisões Técnicas
 
-- **Framework**: [Expo](https://expo.dev/) (React Native)
-- **Roteamento**: [Expo Router](https://docs.expo.dev/router/introduction/) (File-based routing)
-- **Estilização**: StyleSheet (Vanilla CSS-in-JS)
-- **API Client**: [Axios](https://axios-http.com/) com Interceptors
-- **Icons**: [Ionicons](https://ionicons.com/)
-- **Storage**: [AsyncStorage](https://react-native-async-storage.github.io/async-storage/)
+- **Framework**: [Expo](https://expo.dev/) (React Native 0.79)
+- **API Client**: [Native Fetch API](https://developer.mozilla.org/pt-BR/docs/Web/API/Fetch_API)
+  - *Nota*: Optamos pelo `fetch` nativo em vez de Axios para garantir 100% de compatibilidade com ambientes mobile/web modernos e evitar problemas de dependências Node-only (como `follow-redirects`).
+- **Roteamento**: [Expo Router](https://docs.expo.dev/router/introduction/) (File-based)
+- **Estilização**: Sistema de design proprietário baseado em tokens (Emerald Theme).
+- **Storage**: AsyncStorage para persistência de tokens JWT e perfil do usuário.
 
 ---
 
-## 🛠️ Como Executar o Projeto
+## 🚀 Como Executar o Projeto
 
 1. **Instalação**:
    Navegue até a pasta `frontend` e instale as dependências:
