@@ -14,16 +14,16 @@ A aplicação mobile da plataforma **Clean Pro Solutions** foi desenvolvida para
 ## 📸 Demonstração das Telas
 
 ````carousel
-![Tela de Login](frontend/resources/docs/login.png)
+![Tela de Login](./frontend/resources/docs/login.png)
 **Acesso Seguro**: Interface de login simplificada com validação em tempo real e integração com o serviço de autenticação via BFF.
 <!-- slide -->
-![Tela Inicial](frontend/resources/docs/home.png)
+![Tela Inicial](./frontend/resources/docs/home.png)
 **Dashboard Inteligente**: Visão geral de serviços disponíveis, banners promocionais e acesso rápido às principais funcionalidades.
 <!-- slide -->
-![Meus Trabalhos](frontend/resources/docs/jobs.png)
+![Meus Trabalhos](./frontend/resources/docs/jobs.png)
 **Gestão de Serviços**: Acompanhamento detalhado de todos os agendamentos com status visual (Pendente, Em Andamento, Concluído).
 <!-- slide -->
-![Perfil do Usuário](frontend/resources/docs/profile.png)
+![Perfil do Usuário](./frontend/resources/docs/profile.png)
 **Área do Usuário**: Controle total sobre dados pessoais, endereços, segurança e preferências do aplicativo.
 ````
 
