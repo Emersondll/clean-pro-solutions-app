@@ -11,11 +11,13 @@ import { theme } from '../../src/theme/theme';
 import { Card } from '../../src/components/Card';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../../src/services/api';
+import { useRouter } from 'expo-router';
 
 export default function Jobs() {
   const [jobs, setJobs] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [refreshing, setRefreshing] = React.useState(false);
+  const router = useRouter();
 
   const fetchJobs = async () => {
     try {
@@ -92,7 +94,7 @@ export default function Jobs() {
             
             <View style={styles.jobFooter}>
               <Text style={styles.jobPrice}>{item.price}</Text>
-              <TouchableOpacity style={styles.detailsButton}>
+              <TouchableOpacity style={styles.detailsButton} onPress={() => router.push(`/job-details/${item.id}`)}>
                 <Text style={styles.detailsButtonText}>Ver Detalhes</Text>
                 <Ionicons name="chevron-forward" size={16} color={theme.colors.primary} />
               </TouchableOpacity>

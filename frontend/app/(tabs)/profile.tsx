@@ -56,19 +56,19 @@ export default function Profile() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Minha Conta</Text>
         <Card style={styles.optionsCard}>
-          <ProfileOption icon="person-outline" title="Dados Pessoais" />
-          <ProfileOption icon="location-outline" title="Meus Endereços" />
-          <ProfileOption icon="card-outline" title="Pagamentos" />
-          <ProfileOption icon="shield-checkmark-outline" title="Segurança" border={false} />
+          <ProfileOption icon="person-outline" title="Dados Pessoais" onPress={() => router.push('/coming-soon?title=Dados Pessoais')} />
+          <ProfileOption icon="location-outline" title="Meus Endereços" onPress={() => router.push('/coming-soon?title=Meus Endereços')} />
+          <ProfileOption icon="card-outline" title="Pagamentos" onPress={() => router.push('/coming-soon?title=Pagamentos')} />
+          <ProfileOption icon="shield-checkmark-outline" title="Segurança" border={false} onPress={() => router.push('/coming-soon?title=Segurança')} />
         </Card>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Preferências</Text>
         <Card style={styles.optionsCard}>
-          <ProfileOption icon="notifications-outline" title="Notificações" />
-          <ProfileOption icon="moon-outline" title="Modo Escuro" />
-          <ProfileOption icon="help-circle-outline" title="Ajuda & Suporte" border={false} />
+          <ProfileOption icon="notifications-outline" title="Notificações" onPress={() => router.push('/coming-soon?title=Notificações')} />
+          <ProfileOption icon="moon-outline" title="Modo Escuro" onPress={() => router.push('/coming-soon?title=Modo Escuro')} />
+          <ProfileOption icon="help-circle-outline" title="Ajuda & Suporte" border={false} onPress={() => router.push('/coming-soon?title=Ajuda & Suporte')} />
         </Card>
       </View>
 
@@ -82,9 +82,9 @@ export default function Profile() {
   );
 }
 
-function ProfileOption({ icon, title, border = true }: { icon: any; title: string; border?: boolean }) {
+function ProfileOption({ icon, title, border = true, onPress }: { icon: any; title: string; border?: boolean; onPress?: () => void }) {
   return (
-    <TouchableOpacity style={[styles.optionItem, border && styles.optionBorder]}>
+    <TouchableOpacity style={[styles.optionItem, border && styles.optionBorder]} onPress={onPress}>
       <View style={styles.optionContent}>
         <Ionicons name={icon} size={22} color={theme.colors.textSecondary} />
         <Text style={styles.optionTitle}>{title}</Text>

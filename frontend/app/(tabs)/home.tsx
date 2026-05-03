@@ -14,10 +14,12 @@ import { useAuth } from '../../src/context/AuthContext';
 import { useHomeData } from '../../src/hooks/useHomeData';
 import { Card } from '../../src/components/Card';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function Home() {
   const { user } = useAuth();
   const { data, loading, error, refresh } = useHomeData();
+  const router = useRouter();
 
   if (loading && !data) {
     return (
@@ -40,7 +42,7 @@ export default function Home() {
           <Text style={styles.welcomeText}>Olá, {user?.name.split(' ')[0]} 👋</Text>
           <Text style={styles.subtitle}>Encontre o serviço perfeito hoje</Text>
         </View>
-        <TouchableOpacity style={styles.notificationButton}>
+        <TouchableOpacity style={styles.notificationButton} onPress={() => router.push('/notifications')}>
           <Ionicons name="notifications-outline" size={24} color={theme.colors.text} />
           <View style={styles.badge} />
         </TouchableOpacity>
@@ -50,7 +52,7 @@ export default function Home() {
         <View style={styles.bannerContent}>
           <Text style={styles.bannerTitle}>Limpeza Completa</Text>
           <Text style={styles.bannerSubtitle}>20% de desconto na primeira contratação</Text>
-          <TouchableOpacity style={styles.bannerButton}>
+          <TouchableOpacity style={styles.bannerButton} onPress={() => router.push('/(tabs)/jobs')}>
             <Text style={styles.bannerButtonText}>Aproveitar agora</Text>
           </TouchableOpacity>
         </View>
@@ -60,14 +62,14 @@ export default function Home() {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Serviços Disponíveis</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/jobs')}>
             <Text style={styles.seeAllText}>Ver todos</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.servicesGrid}>
           {data?.availableServices.map((service: any) => (
-            <TouchableOpacity key={service.id} style={styles.serviceItem}>
+            <TouchableOpacity key={service.id} style={styles.serviceItem} onPress={() => router.push(`/service-details/${service.id}`)}>
               <Card style={styles.serviceCard} variant="outlined">
                 <View style={[styles.iconContainer, { backgroundColor: theme.colors.primary + '10' }]}>
                   <Ionicons name="color-filter-outline" size={24} color={theme.colors.primary} />
@@ -96,8 +98,9 @@ export default function Home() {
 }
 
 function QuickAction({ icon, title, color }: { icon: any; title: string; color: string }) {
+  const router = useRouter();
   return (
-    <TouchableOpacity style={styles.quickActionItem}>
+    <TouchableOpacity style={styles.quickActionItem} onPress={() => router.push(`/coming-soon?title=${title}`)}>
       <View style={[styles.quickActionIcon, { backgroundColor: color + '15' }]}>
         <Ionicons name={icon} size={24} color={color} />
       </View>
