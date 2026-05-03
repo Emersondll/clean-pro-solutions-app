@@ -88,7 +88,7 @@ export default function JobDetails() {
               </View>
             </View>
           </View>
-          <TouchableOpacity style={styles.chatButton} onPress={() => router.push('/coming-soon?title=Chat com Profissional')}>
+          <TouchableOpacity style={styles.chatButton} onPress={() => router.push('/chat?title=Maria Silva')}>
             <Ionicons name="chatbubble-outline" size={20} color={theme.colors.primary} />
             <Text style={styles.chatButtonText}>Mensagem</Text>
           </TouchableOpacity>
@@ -99,7 +99,7 @@ export default function JobDetails() {
         <View style={styles.footer}>
           <Button 
             title="Avaliar Serviço" 
-            onPress={() => router.push('/coming-soon?title=Avaliar Serviço')} 
+            onPress={() => router.push('/review')} 
             style={styles.actionButton}
           />
         </View>

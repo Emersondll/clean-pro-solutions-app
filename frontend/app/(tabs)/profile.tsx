@@ -56,19 +56,19 @@ export default function Profile() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Minha Conta</Text>
         <Card style={styles.optionsCard}>
-          <ProfileOption icon="person-outline" title="Dados Pessoais" onPress={() => router.push('/coming-soon?title=Dados Pessoais')} />
-          <ProfileOption icon="location-outline" title="Meus Endereços" onPress={() => router.push('/coming-soon?title=Meus Endereços')} />
-          <ProfileOption icon="card-outline" title="Pagamentos" onPress={() => router.push('/coming-soon?title=Pagamentos')} />
-          <ProfileOption icon="shield-checkmark-outline" title="Segurança" border={false} onPress={() => router.push('/coming-soon?title=Segurança')} />
+          <ProfileOption icon="person-outline" title="Dados Pessoais" onPress={() => router.push('/profile/personal-data')} />
+          <ProfileOption icon="location-outline" title="Meus Endereços" onPress={() => router.push('/profile/addresses')} />
+          <ProfileOption icon="card-outline" title="Pagamentos" onPress={() => router.push('/profile/payments')} />
+          <ProfileOption icon="shield-checkmark-outline" title="Segurança" border={false} onPress={() => router.push('/profile/security')} />
         </Card>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Preferências</Text>
         <Card style={styles.optionsCard}>
-          <ProfileOption icon="notifications-outline" title="Notificações" onPress={() => router.push('/coming-soon?title=Notificações')} />
-          <ProfileOption icon="moon-outline" title="Modo Escuro" onPress={() => router.push('/coming-soon?title=Modo Escuro')} />
-          <ProfileOption icon="help-circle-outline" title="Ajuda & Suporte" border={false} onPress={() => router.push('/coming-soon?title=Ajuda & Suporte')} />
+          <ProfileOption icon="notifications-outline" title="Notificações" onPress={() => router.push('/profile/settings')} />
+          <ProfileOption icon="moon-outline" title="Modo Escuro" onPress={() => router.push('/profile/settings')} />
+          <ProfileOption icon="help-circle-outline" title="Ajuda & Suporte" border={false} onPress={() => router.push('/profile/support')} />
         </Card>
       </View>
 

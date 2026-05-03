@@ -60,7 +60,7 @@ export default function ServiceDetails() {
       <View style={styles.footer}>
         <Button 
           title="Agendar Serviço" 
-          onPress={() => router.push(`/coming-soon?title=Agendar Serviço`)} 
+          onPress={() => router.push('/booking')} 
           style={styles.bookButton}
         />
       </View>

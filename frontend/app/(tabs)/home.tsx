@@ -87,20 +87,20 @@ export default function Home() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Ações Rápidas</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickActionsScroll}>
-          <QuickAction icon="calendar-outline" title="Agendar" color="#3B82F6" />
-          <QuickAction icon="star-outline" title="Avaliar" color="#F59E0B" />
-          <QuickAction icon="chatbubbles-outline" title="Chat" color="#10B981" />
-          <QuickAction icon="location-outline" title="Arredores" color="#6366F1" />
+          <QuickAction icon="calendar-outline" title="Agendar" color="#3B82F6" route="/booking" />
+          <QuickAction icon="star-outline" title="Avaliar" color="#F59E0B" route="/review" />
+          <QuickAction icon="chatbubbles-outline" title="Chat" color="#10B981" route="/chat" />
+          <QuickAction icon="location-outline" title="Arredores" color="#6366F1" route="/map" />
         </ScrollView>
       </View>
     </ScrollView>
   );
 }
 
-function QuickAction({ icon, title, color }: { icon: any; title: string; color: string }) {
+function QuickAction({ icon, title, color, route }: { icon: any; title: string; color: string; route: string }) {
   const router = useRouter();
   return (
-    <TouchableOpacity style={styles.quickActionItem} onPress={() => router.push(`/coming-soon?title=${title}`)}>
+    <TouchableOpacity style={styles.quickActionItem} onPress={() => router.push(route)}>
       <View style={[styles.quickActionIcon, { backgroundColor: color + '15' }]}>
         <Ionicons name={icon} size={24} color={color} />
       </View>
