@@ -1,35 +1,152 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../src/theme/theme';
+import api from '../src/services/api';
+import { useAuth } from '../src/context/AuthContext';
+
+interface ChatMessage {
+  id: string;
+  roomId: string;
+  senderId: string;
+  content: string;
+  sentAt: string;
+}
 
 export default function ChatScreen() {
   const router = useRouter();
-  const { title } = useLocalSearchParams();
-  const [message, setMessage] = useState('');
-  
-  const [messages, setMessages] = useState([
-    { id: '1', text: 'Olá! Tudo bem? Meu nome é Maria, serei a profissional responsável pela sua limpeza.', isSender: false, time: '10:30' },
-    { id: '2', text: 'Olá Maria! Tudo ótimo. Que bom, estou aguardando.', isSender: true, time: '10:32' },
-    { id: '3', text: 'Chegarei por volta das 14h, conforme agendado. Há alguma instrução especial para a portaria?', isSender: false, time: '10:35' },
-  ]);
+  const { user } = useAuth();
+  const params = useLocalSearchParams<{
+    roomId?: string;
+    contractId?: string;
+    contractorId?: string;
+    clientId?: string;
+    title?: string;
+  }>();
 
-  const sendMessage = () => {
-    if (message.trim().length > 0) {
-      setMessages([...messages, { 
-        id: Date.now().toString(), 
-        text: message, 
-        isSender: true, 
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
-      }]);
-      setMessage('');
+  const [roomId, setRoomId] = useState<string | null>(params.roomId || null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [message, setMessage] = useState('');
+  const [loadingRoom, setLoadingRoom] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const flatListRef = useRef<FlatList>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fetchMessages = async (rid: string) => {
+    try {
+      const res = await api.get(`/chat/${rid}/messages`);
+      setMessages(res.data || []);
+    } catch (e) {
+      console.error('Failed to fetch messages', e);
     }
   };
 
+  useEffect(() => {
+    const initRoom = async () => {
+      if (roomId) {
+        await fetchMessages(roomId);
+        return;
+      }
+      setLoadingRoom(true);
+      try {
+        const clientId = params.clientId || user?.id || '';
+        const contractorId = params.contractorId || '';
+        const contractId = params.contractId || '';
+        const res = await api.post('/chat/rooms', { clientId, contractorId, contractId });
+        const newRoomId = res.data?.id || res.data;
+        setRoomId(newRoomId);
+        await fetchMessages(newRoomId);
+      } catch (e) {
+        console.error('Failed to create room', e);
+      } finally {
+        setLoadingRoom(false);
+      }
+    };
+
+    initRoom();
+  }, []);
+
+  useEffect(() => {
+    if (!roomId) return;
+
+    intervalRef.current = setInterval(() => {
+      fetchMessages(roomId);
+    }, 3000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [roomId]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  }, [messages]);
+
+  const sendMessage = async () => {
+    if (!message.trim() || !roomId || !user) return;
+    const content = message.trim();
+    setMessage('');
+    setSending(true);
+
+    const optimisticMsg: ChatMessage = {
+      id: `opt-${Date.now()}`,
+      roomId,
+      senderId: user.id,
+      content,
+      sentAt: new Date().toISOString(),
+    };
+    setMessages(prev => [...prev, optimisticMsg]);
+
+    try {
+      await api.post(`/chat/${roomId}/messages`, { senderId: user.id, content });
+    } catch (e) {
+      console.error('Failed to send message', e);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const formatTime = (isoString: string) => {
+    try {
+      return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return '';
+    }
+  };
+
+  const displayTitle = params.title || 'Chat';
+  const avatarLetter = displayTitle[0]?.toUpperCase() || 'C';
+
+  if (loadingRoom) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={styles.loadingText}>Conectando ao chat...</Text>
+      </View>
+    );
+  }
+
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
     >
       <View style={styles.header}>
@@ -38,27 +155,32 @@ export default function ChatScreen() {
         </TouchableOpacity>
         <View style={styles.headerInfo}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>M</Text>
+            <Text style={styles.avatarText}>{avatarLetter}</Text>
           </View>
           <View>
-            <Text style={styles.headerTitle}>{title || 'Maria Silva'}</Text>
+            <Text style={styles.headerTitle}>{displayTitle}</Text>
             <Text style={styles.headerSubtitle}>Online agora</Text>
           </View>
         </View>
       </View>
 
       <FlatList
+        ref={flatListRef}
         data={messages}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.chatContainer}
-        renderItem={({ item }) => (
-          <View style={[styles.messageWrapper, item.isSender ? styles.messageWrapperSender : styles.messageWrapperReceiver]}>
-            <View style={[styles.messageBubble, item.isSender ? styles.messageBubbleSender : styles.messageBubbleReceiver]}>
-              <Text style={[styles.messageText, item.isSender && styles.messageTextSender]}>{item.text}</Text>
-              <Text style={[styles.timeText, item.isSender && styles.timeTextSender]}>{item.time}</Text>
+        renderItem={({ item }) => {
+          const isSender = item.senderId === user?.id;
+          return (
+            <View style={[styles.messageWrapper, isSender ? styles.messageWrapperSender : styles.messageWrapperReceiver]}>
+              <View style={[styles.messageBubble, isSender ? styles.messageBubbleSender : styles.messageBubbleReceiver]}>
+                <Text style={[styles.messageText, isSender && styles.messageTextSender]}>{item.content}</Text>
+                <Text style={[styles.timeText, isSender && styles.timeTextSender]}>{formatTime(item.sentAt)}</Text>
+              </View>
             </View>
-          </View>
-        )}
+          );
+        }}
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
       />
 
       <View style={styles.inputContainer}>
@@ -72,9 +194,10 @@ export default function ChatScreen() {
           onChangeText={setMessage}
           multiline
         />
-        <TouchableOpacity 
-          style={[styles.sendButton, message.trim().length > 0 && styles.sendButtonActive]} 
+        <TouchableOpacity
+          style={[styles.sendButton, message.trim().length > 0 && styles.sendButtonActive]}
           onPress={sendMessage}
+          disabled={sending}
         >
           <Ionicons name="send" size={20} color="#FFF" />
         </TouchableOpacity>
@@ -87,6 +210,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    color: theme.colors.textSecondary,
+    fontSize: 14,
   },
   header: {
     flexDirection: 'row',

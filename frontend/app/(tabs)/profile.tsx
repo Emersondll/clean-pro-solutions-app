@@ -68,6 +68,7 @@ export default function Profile() {
         <Card style={styles.optionsCard}>
           <ProfileOption icon="notifications-outline" title="Notificações" onPress={() => router.push('/profile/settings')} />
           <ProfileOption icon="moon-outline" title="Modo Escuro" onPress={() => router.push('/profile/settings')} />
+          <ProfileOption icon="ticket-outline" title="Meus Tickets" onPress={() => router.push('/profile/support')} />
           <ProfileOption icon="help-circle-outline" title="Ajuda & Suporte" border={false} onPress={() => router.push('/profile/support')} />
         </Card>
       </View>

@@ -1,13 +1,13 @@
-import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  RefreshControl, 
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
   ActivityIndicator,
   TouchableOpacity,
-  Image
+  TextInput,
 } from 'react-native';
 import { theme } from '../../src/theme/theme';
 import { useAuth } from '../../src/context/AuthContext';
@@ -20,6 +20,26 @@ export default function Home() {
   const { user } = useAuth();
   const { data, loading, error, refresh } = useHomeData();
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSearchChange = (text: string) => {
+    setSearchQuery(text);
+    if (searchTimerRef.current) {
+      clearTimeout(searchTimerRef.current);
+    }
+    if (text.length > 2) {
+      searchTimerRef.current = setTimeout(() => {
+        router.push(`/search?query=${encodeURIComponent(text)}` as any);
+      }, 500);
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.length > 2) {
+      router.push(`/search?query=${encodeURIComponent(searchQuery)}` as any);
+    }
+  };
 
   if (loading && !data) {
     return (
@@ -30,7 +50,7 @@ export default function Home() {
   }
 
   return (
-    <ScrollView 
+    <ScrollView
       style={styles.container}
       contentContainerStyle={styles.scrollContent}
       refreshControl={
@@ -46,6 +66,24 @@ export default function Home() {
           <Ionicons name="notifications-outline" size={24} color={theme.colors.text} />
           <View style={styles.badge} />
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.searchContainer}>
+        <Ionicons name="search-outline" size={20} color={theme.colors.textMuted} style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Buscar serviços..."
+          placeholderTextColor={theme.colors.textMuted}
+          value={searchQuery}
+          onChangeText={handleSearchChange}
+          onSubmitEditing={handleSearchSubmit}
+          returnKeyType="search"
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery('')}>
+            <Ionicons name="close-circle" size={18} color={theme.colors.textMuted} />
+          </TouchableOpacity>
+        )}
       </View>
 
       <Card style={styles.bannerCard} variant="elevated">
@@ -91,6 +129,7 @@ export default function Home() {
           <QuickAction icon="star-outline" title="Avaliar" color="#F59E0B" route="/review" />
           <QuickAction icon="chatbubbles-outline" title="Chat" color="#10B981" route="/chat" />
           <QuickAction icon="location-outline" title="Arredores" color="#6366F1" route="/map" />
+          <QuickAction icon="search-outline" title="Busca" color="#8B5CF6" route="/search" />
         </ScrollView>
       </View>
     </ScrollView>
@@ -100,7 +139,7 @@ export default function Home() {
 function QuickAction({ icon, title, color, route }: { icon: any; title: string; color: string; route: string }) {
   const router = useRouter();
   return (
-    <TouchableOpacity style={styles.quickActionItem} onPress={() => router.push(route)}>
+    <TouchableOpacity style={styles.quickActionItem} onPress={() => router.push(route as any)}>
       <View style={[styles.quickActionIcon, { backgroundColor: color + '15' }]}>
         <Ionicons name={icon} size={24} color={color} />
       </View>
@@ -128,7 +167,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   welcomeText: {
     fontSize: 24,
@@ -159,6 +198,26 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.error,
     borderWidth: 1.5,
     borderColor: '#FFF',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.surface,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    ...theme.shadows.sm,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: theme.colors.text,
   },
   bannerCard: {
     backgroundColor: theme.colors.primary,
