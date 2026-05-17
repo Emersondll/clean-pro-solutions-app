@@ -126,10 +126,13 @@ export default function Home() {
         <Text style={styles.sectionTitle}>Ações Rápidas</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickActionsScroll}>
           <QuickAction icon="calendar-outline" title="Agendar" color="#3B82F6" route="/booking" />
+          <QuickAction icon="document-text-outline" title="Contratos" color="#059669" route="/contracts" />
+          <QuickAction icon="card-outline" title="Pagamento" color="#8B5CF6" route="/payment" />
+          <QuickAction icon="time-outline" title="Disponib." color="#F59E0B" route="/availability" />
           <QuickAction icon="star-outline" title="Avaliar" color="#F59E0B" route="/review" />
           <QuickAction icon="chatbubbles-outline" title="Chat" color="#10B981" route="/chat" />
-          <QuickAction icon="location-outline" title="Arredores" color="#6366F1" route="/map" />
-          <QuickAction icon="search-outline" title="Busca" color="#8B5CF6" route="/search" />
+          <QuickAction icon="help-circle-outline" title="Suporte" color="#EF4444" route="/profile/support" />
+          <QuickAction icon="search-outline" title="Busca" color="#6366F1" route="/search" />
         </ScrollView>
       </View>
     </ScrollView>

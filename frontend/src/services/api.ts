@@ -68,6 +68,33 @@ const api = {
       if (endpoint.startsWith('/contracts/client/') && method === 'GET') {
         return { data: mocks.MOCK_CONTRACTS, status: 200 };
       }
+      if (endpoint.startsWith('/contracts/contractor/') && method === 'GET') {
+        return { data: mocks.MOCK_CONTRACTS, status: 200 };
+      }
+      if (endpoint.startsWith('/contracts/') && method === 'GET') {
+        const id = endpoint.split('/').pop() || '';
+        const contract = mocks.MOCK_CONTRACTS.find((c: any) => c.id === id) || mocks.MOCK_CONTRACTS[0];
+        return { data: contract, status: 200 };
+      }
+
+      // PAYMENTS
+      if (endpoint.startsWith('/payments/contract/') && method === 'GET') {
+        return { data: { id: 'pay-1', contractId: endpoint.split('/').pop(), status: 'PENDING', amount: 250 }, status: 200 };
+      }
+      if (endpoint === '/payments/webhook' && method === 'POST') {
+        return { data: { message: 'Pagamento processado com sucesso!' }, status: 200 };
+      }
+
+      // AVAILABILITY
+      if (endpoint.startsWith('/availability/contractor/') && method === 'GET') {
+        return { data: [
+          { id: 'slot-1', contractorId: endpoint.split('/').pop(), startTime: '2026-06-01T10:00:00Z', endTime: '2026-06-01T14:00:00Z' },
+          { id: 'slot-2', contractorId: endpoint.split('/').pop(), startTime: '2026-06-03T09:00:00Z', endTime: '2026-06-03T12:00:00Z' },
+        ], status: 200 };
+      }
+      if (endpoint.startsWith('/availability/check') && method === 'GET') {
+        return { data: true, status: 200 };
+      }
 
       // NOTIFICATIONS
       if (endpoint.startsWith('/notifications/')) {
