@@ -92,4 +92,4 @@ Controle total sobre dados pessoais, endereços, segurança e preferências do a
 
 ---
 
-Desenvolvido com ❤️ pela equipe Clean Pro Solutions.
+Desenvolvido por **Emerson Lima** — Clean Pro Solutions.
